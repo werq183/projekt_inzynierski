@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -25,12 +24,12 @@ SECRET_KEY = 'django-insecure-e-*r$g%p96380oxx%5e%m(+099)@2wayhf7*3&!mjj*or^m6o_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["10.0.10.50"]
-
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
 INSTALLED_APPS = [
+    "app",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -69,21 +68,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'galeria.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'aplikacja',
-        'USER': 'aplikacja',
+        'NAME': 'galeria',
+        'USER': 'galeria',
         'PASSWORD': '123456',
-        'HOST': 'localhost',  # lub inny host, jeśli używasz zdalnej bazy danych
+        'HOST': '192.168.56.4',  # lub inny host, jeśli używasz zdalnej bazy danych
         'PORT': '5432',  # lub inny port, jeśli PostgreSQL nie działa na domyślnym porcie
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -103,7 +100,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -114,7 +110,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
