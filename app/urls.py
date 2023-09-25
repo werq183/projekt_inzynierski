@@ -12,12 +12,9 @@ urlpatterns = [
     path("galleries/", galleries, name="galleries"),
     path("generate-password", password, name="password"),
     path("signup", SignUp.as_view(), name="signup"),
-    path(
-        "signin",
-        SignIn.as_view(),
-        name="signin",
-    ),
+    path("signin", SignIn.as_view(), name="signin",),
     path("logout", LogoutView.as_view(), name="logout"),
+    path('artists/<int:artist_id>/', views.artist_detail, name='artist_detail'),
 ]
 
 if settings.DEBUG:

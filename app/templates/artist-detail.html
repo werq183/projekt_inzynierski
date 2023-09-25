@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    <link href="{% static 'css/style-artist-detail.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <h1>Informacje o artyście: {{ artist.first_name }} {{ artist.last_name }}</h1>
+    <img src="{{ artist.photo.url }}" alt="{{ artist.first_name }} {{ artist.last_name }}">
+    <p>{{ artist.description }}</p>
+{% endblock %}

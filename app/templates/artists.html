@@ -15,7 +15,7 @@
                 {%  for photo in photos %}
                 <div class="col-sm-4">
                     <div class="thumbnail">
-                        <a href="{{ photo.photo.url }}">
+                        <a href="{%  url 'artist_detail' photo.id %}">
                             <img class="img-responsive center-block photo" src="{{ photo.photo.url }}" alt="img">
                             <div class="caption">
                                 <p>{{ photo.first_name }} {{ photo.last_name }}</p>

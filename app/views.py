@@ -1,6 +1,6 @@
 import string
 from random import choice
-from django.shortcuts import render, reverse
+from django.shortcuts import render, reverse, get_object_or_404
 from .models import Artist
 
 from django.contrib.auth.views import LoginView
@@ -20,6 +20,11 @@ def artists(request):
     queryset = Artist.objects.all()
     context = {"photos": queryset}
     return render(request, "artists.html", context)
+
+
+def artist_detail(request, artist_id):
+    artist = get_object_or_404(Artist, pk=artist_id)
+    return render(request, 'artist-detail.html', {'artist': artist})
 
 
 def galleries(request):
