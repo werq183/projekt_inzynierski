@@ -49,6 +49,8 @@ a {
 .menu {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -153,8 +155,7 @@ a {
 }
 
 .footer-basic {
-  position: absolute;
-  bottom: 0;
+  display: flow;
   width: 100%;
   padding:40px 0;
   background:#d5c9df;

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    <link href="{% static 'css/style-artists.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <div class="artist-list">
+        <div class="artist-list-header">
+            <h2>Artyści</h2>
+        </div>
+        <div class="artist-list-main container">
+            <div class="row ">
+                {%  for photo in photos %}
+                <div class="col-sm-4">
+                    <div class="thumbnail">
+                        <a href="{{ photo.photo.url }}">
+                            <img class="img-responsive center-block photo" src="{{ photo.photo.url }}" alt="img">
+                            <div class="caption">
+                                <p>{{ photo.first_name }} {{ photo.last_name }}</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

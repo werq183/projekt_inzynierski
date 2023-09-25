@@ -8,6 +8,7 @@ class Artist(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     description = models.TextField()
+    photo = models.ImageField(default="", upload_to='')
 
 
 class AI(models.Model):

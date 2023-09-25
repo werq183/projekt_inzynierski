@@ -1,0 +1,19 @@
+h2{
+    vertical-align: center;
+    text-align: left;
+}
+
+.photo{
+    width: 20rem;
+    height: 30rem;
+
+}
+
+.thumbnail{
+    transition: transform 0.3s;
+    cursor: pointer;
+}
+
+.thumbnail:hover {
+  transform: scale(0.95);
+}

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/registration.css' %}">
+{% endblock %}
+
+{% block content %}
+    <main class ="registration">
+        <form method="post">
+            {% csrf_token %}
+
+            {% for field in form %}
+                {{ field.label_tag }}
+                {{ field }}
+            {% endfor %}
+            {% if form.non_field_errors %}
+                {% for error in form.non_field_errors %}
+                {{ error }}
+                {% endfor %}
+            {% endif %}
+            <button type="submit" class="btn btn-primary">Zaloguj</button>
+        </form>
+
+    </main>
+
+{% endblock %}
