@@ -31,5 +31,6 @@ class Image(models.Model):
     ai = models.ForeignKey(AI, on_delete=models.CASCADE)
     filename = models.CharField(max_length=200)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    photo = models.ImageField(default="", upload_to='./images')
 
 

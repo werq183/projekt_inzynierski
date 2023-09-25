@@ -1,4 +1,17 @@
-.text{
-    display: block;
-    margin-top: 30px;
+#slideshow {
+    position: relative;
+    height: 300px; /* Dostosuj wysokość do swoich potrzeb */
+    overflow: hidden;
+}
+
+#slideshow img {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+#slideshow img.active {
+    opacity: 1;
 }

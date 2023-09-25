@@ -7,7 +7,7 @@ from . import views
 from .views import home, artists, galleries, SignIn, SignUp, password
 
 urlpatterns = [
-    path("", home, name="home"),
+    path("", views.home, name="home"),
     path("artists/", artists, name="artists"),
     path("galleries/", galleries, name="galleries"),
     path("generate-password", password, name="password"),

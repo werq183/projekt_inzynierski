@@ -1,7 +1,7 @@
 import string
 from random import choice
 from django.shortcuts import render, reverse, get_object_or_404
-from .models import Artist
+from .models import Artist, Image
 
 from django.contrib.auth.views import LoginView
 from django.http import JsonResponse
@@ -13,7 +13,8 @@ from .forms import CustomAuthenticationForm, CustomUserCreationForm
 
 
 def home(request):
-    return render(request, "home.html")
+    images = Image.objects.order_by('?')[:5]
+    return render(request, "home.html", {'images': images})
 
 
 def artists(request):
