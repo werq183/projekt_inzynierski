@@ -9,7 +9,7 @@
 {% block content %}
     <div id="slideshow">
         {% for image in images %}
-            <img src="{{ image.photo.url }}" alt="{{ image.photo.name }}" {% if forloop.counter != 1 %}style="display: none;"{% endif %}>
+            <img src="{{ image.photo.url }}" alt="{{ image.photo.name }}" >
         {% endfor %}
     </div>
 
