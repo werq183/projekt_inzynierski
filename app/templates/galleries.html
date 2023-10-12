@@ -4,3 +4,22 @@
 {% block css %}
     <link href="{% static 'css/style-galleries.css' %}" rel="stylesheet">
 {% endblock %}
+
+{% block content %}
+    {% if is_authenticated %}
+        <button>Utwórz galerię</button>
+        <h2>Twoje galerie:</h2>
+        {% if galleries %}
+            <ul>
+            {% for gallery in galleries %}
+                <li>{{ gallery.name }}</li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>Nie masz jeszcze żadnych galerii.</p>
+        {% endif %}
+    {% else %}
+        <button disabled>Utwórz galerię (zaloguj się)</button>
+        <p>Proszę się zalogować, żeby utworzyć galerię.</p>
+    {% endif %}
+{% endblock %}

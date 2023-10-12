@@ -1,13 +1,18 @@
 import string
 from random import choice
-from django.shortcuts import render, reverse, get_object_or_404
-from .models import Artist, Image
+
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.shortcuts import render, reverse, get_object_or_404, redirect
+from django.contrib import messages
+
+from .models import Artist, Image, Gallery
 
 from django.contrib.auth.views import LoginView
 from django.http import JsonResponse
 from django.views.generic import CreateView
 
-from .forms import CustomAuthenticationForm, CustomUserCreationForm
+from .forms import CustomAuthenticationForm, CustomUserCreationForm, UserProfileForm
 '''def index(request):
     return HttpResponse("Hello, world. You're at the app index.")'''
 
@@ -29,7 +34,12 @@ def artist_detail(request, artist_id):
 
 
 def galleries(request):
-    return render(request, "galleries.html")
+    user = request.user
+    is_authenticated = user.is_authenticated
+    galerie = None
+    if is_authenticated:
+        galerie = Gallery.objects.filter(user=user)
+    return render(request, 'galleries.html', {'is_authenticated': is_authenticated, 'galleries': galerie})
 
 
 def password(request):
@@ -71,3 +81,21 @@ class SignIn(LoginView):
 
     def get_success_url(self):
         return reverse("home")
+
+
+def user_profile(request, username):
+    user = get_object_or_404(User, username=username)
+    is_owner = request.user == user
+
+    if request.method == 'POST' and is_owner:
+        form = UserProfileForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile updated successfully')
+            new_username = form.cleaned_data['username']
+            return redirect('user_profile', username=new_username)
+    else:
+        form = UserProfileForm(instance=user)
+
+    return render(request, 'profile.html', {'form': form, 'is_owner': is_owner, 'target_user': user})
+

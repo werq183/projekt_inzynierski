@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    <link href="{% static 'css/style-profile.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <h1>Profile of {{ target_user.username }}</h1>
+
+    {% if is_owner %}
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Update</button>
+        </form>
+    {% endif %}
+
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <h2>Current Info:</h2>
+    <ul>
+        <li>Username: {{ target_user.username }}</li>
+        <li>Email: {{ target_user.email }}</li>
+    </ul>
+{% endblock %}

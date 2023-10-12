@@ -4,7 +4,7 @@ from django.conf.urls.static import static
 from django.contrib.auth.views import LogoutView
 
 from . import views
-from .views import home, artists, galleries, SignIn, SignUp, password
+from .views import home, artists, galleries, SignIn, SignUp, password, user_profile
 
 urlpatterns = [
     path("", views.home, name="home"),
@@ -15,6 +15,7 @@ urlpatterns = [
     path("signin", SignIn.as_view(), name="signin",),
     path("logout", LogoutView.as_view(), name="logout"),
     path('artists/<int:artist_id>/', views.artist_detail, name='artist_detail'),
+    path('profile/<str:username>/', views.user_profile, name='user_profile'),
 ]
 
 if settings.DEBUG:

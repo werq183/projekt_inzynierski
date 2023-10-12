@@ -79,3 +79,10 @@ class CustomAuthenticationForm(AuthenticationForm):
             "username": "Nazwa użytkownika",
             "password": "Hasło",
         }
+
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email']
+
