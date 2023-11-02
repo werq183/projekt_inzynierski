@@ -91,10 +91,11 @@ class ImageSearchForm(forms.Form):
     artists = forms.ModelMultipleChoiceField(
         queryset=Artist.objects.all(),
         widget=forms.CheckboxSelectMultiple,
-        required=False,
+        required=False
     )
     subjects = forms.ModelMultipleChoiceField(
         queryset=Subject.objects.all(),
         widget=forms.CheckboxSelectMultiple,
-        required=False,
+        required=False
     )
+

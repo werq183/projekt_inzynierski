@@ -1,8 +1,8 @@
 import string
-from random import choice
+import random
+from random import choice, sample
 
 from django.contrib.auth import logout
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, reverse, get_object_or_404, redirect
 from django.contrib import messages
@@ -97,19 +97,32 @@ def logout_view(request):
     return render(request, 'logged-out.html')
 
 
-def search_images(request):
-    form = ImageSearchForm(request.GET or None)
-    images = Image.objects.all()
+def image_search(request):
+    images = list(Image.objects.all())  # Convert QuerySet to list
 
-    if form.is_valid():
-        artists = form.cleaned_data['artists']
-        subjects = form.cleaned_data['subjects']
+    if request.method == "POST":
+        form = ImageSearchForm(request.POST)
+        if form.is_valid():
+            artists = form.cleaned_data['artists']
+            subjects = form.cleaned_data['subjects']
 
-        if artists:
-            images = images.filter(style__in=artists)
-        if subjects:
-            images = images.filter(subject__in=subjects)
+            if artists and subjects:
+                images = Image.objects.filter(style__in=artists, subject__in=subjects)
+            else:
+                messages.error(request, 'Proszę wybrać zarówno artystę, jak i temat.')
+                images = []
+        else:
+            random.shuffle(images)
+            images = images[:6]
+    else:
+        form = ImageSearchForm()
+        random.shuffle(images)
+        images = images[:6]
 
-    return render(request, 'img-search.html', {'form': form, 'images': images})
+    context = {
+        'form': form,
+        'images': images
+    }
 
+    return render(request, 'img-search.html', context)
 

@@ -9,7 +9,7 @@ from .views import home, artists, SignIn, SignUp, password, user_profile
 urlpatterns = [
     path("", views.home, name="home"),
     path("artists/", artists, name="artists"),
-    path('search/', views.search_images, name='search_images'),
+    path('search/', views.image_search, name='search_images'),
     path("generate-password", password, name="password"),
     path("signup", SignUp.as_view(), name="signup"),
     path("signin", SignIn.as_view(), name="signin"),
