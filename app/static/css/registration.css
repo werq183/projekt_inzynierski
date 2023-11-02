@@ -1,0 +1,59 @@
+.registration {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #FFF; /* Kolor tła*/
+}
+
+form {
+  border: 1px solid #ccd7e4;
+  background-color: #ccd7e4;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+form label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 8px;
+  color: #828A95;
+}
+
+form input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #CCD7E4;
+  border-radius: 4px;
+}
+
+
+button.btn.btn-primary {
+  background-color: #d5c9df; /* Kolor przycisku */
+  border: none;
+  color: #000000; /* Kolor tekstu przycisku */
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 12px;
+}
+
+button.btn.btn-primary:hover {
+  background-color: #dcb8cb; /* Kolor hovera przycisku */
+}
+
+.ref{
+  margin-top: 15px;
+}
+
+.ref a{
+  text-decoration: underline;
+  color: #828a95;
+}

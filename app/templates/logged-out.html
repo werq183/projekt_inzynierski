@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/style-logged-out.css' %}">
+{% endblock %}
+
+
+{% block content %}
+<div class="logout-container">
+    <h1>Dziękujemy za skorzystanie z platformy!</h1>
+    <p>Zostałeś pomyślnie wylogowany.</p>
+    <a href="{% url 'home' %}" class="btn btn-primary return-btn">Powrót do strony głównej</a>
+</div>
+{% endblock %}

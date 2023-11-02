@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    <link href="{% static 'css/style-profile.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <div class="profile-container">
+        <h1>Profil użytkownika: {{ target_user.username }}</h1>
+
+        <div class="profile-content">
+            <div class="current-info">
+                <h2>Aktualne informacje</h2>
+                <ul>
+                    <li>Użytkownik: {{ target_user.username }}</li>
+                    <li>Email: {{ target_user.email }}</li>
+                </ul>
+            </div>
+        </div>
+        <br><br>
+        {% if is_owner %}
+            <div class="update-form">
+                <h2>Zaktualizuj dane</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="form-group">
+                            {{ field.label_tag }} <br>
+                            {{ field }} <br>
+                            {% if field.help_text %}
+                                <small class="help-text">{{ field.help_text }}</small>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="btn-update">Zaktualizuj</button>
+                </form>
+
+                {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

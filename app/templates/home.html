@@ -1,10 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-    dfgdfgdfgfdgfdg
-</body>
-</html>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    <link href="{% static 'css/style-home.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <div id="slideshow">
+        <div id="clickArea" class="click-area">
+            {% for image in images %}
+                <img src="{{ image.photo.url }}" alt="{{ image.photo.name }}" >
+            {% endfor %}
+        </div>
+    </div>
+
+    <button id="prevBtn"><i class="arrow left"></i></button>
+    <button id="nextBtn"><i class="arrow right"></i></button>
+
+    <script src="{% static 'js/slider.js'%}"></script>
+{% endblock %}
