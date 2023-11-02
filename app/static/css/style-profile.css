@@ -1,46 +1,91 @@
 .profile-container {
-  background-color: #d5c9df; /* Tło z palety */
+  background-color: #FFF;  /* Zaktualizowany jaśniejszy kolor tła z palety */
   width: 100%;
+  padding: 30px 30px;  /* Dodane paddingi dla większej przestrzeni */
+  margin-top: 2em;
+  margin-bottom: 2em;
 }
 
-.profile-content {
-  display: flex;
-  justify-content: space-between;
-}
-
-.current-info, .update-form {
-  flex: 1;
+.profile-content, .update-form{
+  margin: auto;
+  max-width: 90%;
+  display: block;
+  width: 100%;  /* Stała szerokość dla obu sekcji */
   border: 1px solid #ccd7e4;
-  padding: 20px;
+  padding: 30px;
   border-radius: 8px;
+  background-color: #D5C9DF;
+  text-align: center;
 }
+
 
 h1, h2 {
-  color: #828a95; /* Kolor tekstu z palety */
+  color: #828A95;
+  margin-bottom: 20px;  /* Dodane dla większego odstępu między nagłówkami a zawartością */
+  text-align: center;
 }
 
-ul {
+.current-info ul {
   list-style-type: none;
   padding: 0;
 }
 
-li {
-  margin: 5px 0;
-  padding: 10px;
+.current-info li {
+  margin: 2em 0;  /* odstęp między elementami listy */
+  padding: 20px;
   text-align: center;
+  background-color: #fff;  /* Tło dla elementów listy */
+  border-radius: 8px;  /* Zaokrąglenie rogów dla elementów listy */
 }
 
 .btn-update {
-  background-color: #ceeaf7; /* Kolor przycisku z palety */
+  background-color: #CEEAF7;
   border: none;
-  color: #828a95; /* Kolor tekstu z palety */
-  padding: 10px 20px;
+  color: #828A95;
+  padding: 10px 30px;  /* Zwiększone paddingi dla większego przycisku */
   text-align: center;
   display: block;
-  margin: auto;
+  margin: 20px auto 0;  /* Dodany górny margines */
   border-radius: 12px;
 }
 
 .btn-update:hover {
-  background-color: #ccd7e4; /* Kolor hovera z palety */
+  background-color: #ccd7e4;
+}
+
+.messages {
+  margin-top: 20px;
+}
+
+.update-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.update-form label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #828A95;
+}
+
+.update-form input, .update-form select {
+    padding: 0.8rem;
+    border: 1px solid #ccd7e4;
+    border-radius: 8px;
+    background-color: #f2f2f2; /* Dodane tło dla inputów */
+}
+
+.update-form button {
+    align-self: center; /* Wyśrodkowanie przycisku */
+}
+
+/* Style dla komunikatów */
+.messages div {
+
+    margin-top: 15px;
+    border-radius: 8px;
+    background-color: #d5c9df; /* Jaśniejsze tło dla komunikatów */
+    text-align: center;
+    color: #828A95; /* Kolor tekstu dla komunikatów */
 }

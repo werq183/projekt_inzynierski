@@ -42,6 +42,10 @@ h2 {
     border: 1px solid var(--dark-purple);
 }
 
+.thumbnail a{
+    text-decoration: none;
+}
+
 /* Styl dla podpisów */
 .caption p {
     color: var(--main-text);

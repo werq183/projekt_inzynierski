@@ -17,26 +17,35 @@
                     <li>Email: {{ target_user.email }}</li>
                 </ul>
             </div>
-
-            {% if is_owner %}
+        </div>
+        <br><br>
+        {% if is_owner %}
             <div class="update-form">
                 <h2>Zaktualizuj dane</h2>
                 <form method="post">
                     {% csrf_token %}
-                    {{ form.as_p }}
+                    {% for field in form %}
+                        <div class="form-group">
+                            {{ field.label_tag }} <br>
+                            {{ field }} <br>
+                            {% if field.help_text %}
+                                <small class="help-text">{{ field.help_text }}</small>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
                     <button type="submit" class="btn-update">Zaktualizuj</button>
                 </form>
-            {% if messages %}
-            <div class="messages">
-                {% for message in messages %}
-                    <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-                        {{ message }}
-                    </div>
-                {% endfor %}
+
+                {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
-            {% endif %}
-            </div>
-            {% endif %}
-        </div>
+        {% endif %}
     </div>
 {% endblock %}

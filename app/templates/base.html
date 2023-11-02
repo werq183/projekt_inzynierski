@@ -40,18 +40,18 @@
                 </div>
             </li>
           {% else %}
-            <li class="menu-item">
-                <div class="logged-in-info ">
-                    <a class="nav-link">Logged in as {{ user.username }}</a>
-                    <form class="form-inline my-2 my-lg-0" action="{% url 'logout_view' %}" method="POST">
-                        {% csrf_token %}
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Logout</button>
-                    </form>
+             <li class="menu-item">
+                <div class="profile-link ">
+                    <a href="{% url 'user_profile' user.username %}">Profil</a>
                 </div>
             </li>
             <li class="menu-item">
-                <div class="profile-link ">
-                    <a href="{% url 'user_profile' user.username %}">Profil</a>
+                <div class="logged-in-info">
+                    <span>Zalogowany jako: <span class="username">{{ user.username }}</span></span>
+                    <form class="form-inline my-2 my-lg-0" action="{% url 'logout_view' %}" method="POST">
+                        {% csrf_token %}
+                        <button class="btn" type="submit">Wyloguj</button>
+                    </form>
                 </div>
             </li>
         {% endif %}
