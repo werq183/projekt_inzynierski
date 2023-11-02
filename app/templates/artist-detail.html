@@ -6,7 +6,16 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Informacje o artyście: {{ artist.first_name }} {{ artist.last_name }}</h1>
-    <img src="{{ artist.photo.url }}" alt="{{ artist.first_name }} {{ artist.last_name }}">
-    <p>{{ artist.description }}</p>
+    <div class="artist-detail container">
+        <h1>Informacje o artyście: {{ artist.first_name }} {{ artist.last_name }}</h1>
+        <div class="row">
+            <div class="col-md-6 artist-photo">
+                <img src="{{ artist.photo.url }}" alt="{{ artist.first_name }} {{ artist.last_name }}">
+            </div>
+            <div class="col-md-6 artist-info">
+                <p>{{ artist.description }}</p>
+            </div>
+        </div>
+    </div>
 {% endblock %}
+

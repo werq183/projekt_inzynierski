@@ -54,14 +54,13 @@ a {
   list-style-type: none;
   margin: 0;
   padding: 0;
+  z-index: 1000;
 }
 
 .menu > li {
   margin: 0 1rem;
   overflow: hidden;
 }
-
-
 
 .menu-button-container {
   display: none;
@@ -126,6 +125,7 @@ a {
     width: 100%;
     justify-content: center;
     align-items: center;
+    z-index: 1000;
   }
   #menu-toggle ~ .menu li {
     height: 0;
@@ -197,4 +197,14 @@ a {
   font-size:13px;
   color: #828A95;
   margin-bottom:0;
+}
+
+.login p, .logged-in-info a, .profile-link a {
+    margin: 0;
+    padding: 0;
+    line-height: normal;
+}
+
+.login, .logged-in-info, .profile-link {
+    vertical-align: middle;
 }

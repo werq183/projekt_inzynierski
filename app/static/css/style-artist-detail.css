@@ -1,0 +1,49 @@
+/* Kolory */
+:root {
+    --main-text: #828A95;
+    --light-blue: #CEEAF7;
+    --medium-blue: #CCD7E4;
+    --light-purple: #D5C9DF;
+    --dark-purple: #DCB8CB;
+}
+
+.artist-detail {
+    margin-top: 40px;  /* Odstęp między navbarem a nagłówkiem */
+    margin-bottom: 40px;  /* Odstęp między zdjęciem a stopką */
+}
+
+/* Styl dla nagłówka */
+h1 {
+    color: var(--main-text);
+    text-align: center;
+    font-size: 2.5em;
+    border-bottom: 3px solid var(--dark-purple);
+    margin-bottom: 30px;
+}
+
+/* Styl dla kontenera ze zdjęciem */
+.artist-photo img {
+    width: 100%;
+    max-width: 600px;  /* maksymalny rozmiar */
+    height: auto;
+    object-fit: cover;
+    border: 1px solid var(--light-blue);
+    padding: 10px;
+    margin: 0 auto;
+}
+
+/* Styl dla kontenera z opisem */
+.artist-info {
+    padding: 20px;
+    font-size: 1.2em;
+    color: var(--main-text);
+    background-color: var(--medium-blue);
+    border: 1px solid var(--light-blue);
+}
+
+/* Styl dla responsywności */
+@media (max-width: 768px) {
+    .artist-photo, .artist-info {
+        margin-bottom: 20px;
+    }
+}

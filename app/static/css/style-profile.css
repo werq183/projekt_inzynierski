@@ -1,0 +1,46 @@
+.profile-container {
+  background-color: #d5c9df; /* Tło z palety */
+  width: 100%;
+}
+
+.profile-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.current-info, .update-form {
+  flex: 1;
+  border: 1px solid #ccd7e4;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+h1, h2 {
+  color: #828a95; /* Kolor tekstu z palety */
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin: 5px 0;
+  padding: 10px;
+  text-align: center;
+}
+
+.btn-update {
+  background-color: #ceeaf7; /* Kolor przycisku z palety */
+  border: none;
+  color: #828a95; /* Kolor tekstu z palety */
+  padding: 10px 20px;
+  text-align: center;
+  display: block;
+  margin: auto;
+  border-radius: 12px;
+}
+
+.btn-update:hover {
+  background-color: #ccd7e4; /* Kolor hovera z palety */
+}

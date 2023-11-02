@@ -28,40 +28,33 @@
           <li class="menu-item"><a href="{% url 'home' %}">Strona główna</a></li>
           <li class="menu-item"><a href="{% url 'artists' %}">Artyści</a></li>
           <li class="menu-item"><a href="{% url 'galleries' %}">Galerie</a></li>
-        </ul>
-        <span></span>
-        <ul class="menu">
+          {% if not user.is_authenticated %}
             <li class="menu-item">
-                {% if not user.is_authenticated %}
-                    <div class="login mr-right">
-                        <a href="{% url 'signup' %}"><p>Zarejestruj się</p></a>
-                    </div>
-                {% endif %}
+                <div class="login ">
+                    <a href="{% url 'signup' %}"><p>Zarejestruj się</p></a>
+                </div>
             </li>
             <li class="menu-item">
-                {% if user.is_authenticated %}
-                    <ul class="menu mr-right">
-                        <li class="menu-item">
-                            <a class="nav-link">Logged in as {{ user.username }}</a>
-                        </li>
-                        <form class="form-inline my-2 my-lg-0" action="{% url 'logout' %}" method="POST">
-                            {% csrf_token %}
-                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Logout</button>
-                        </form>
-                    </ul>
+                <div class="login ">
+                    <a href="{% url 'signin' %}"><p>Zaloguj się</p></a>
+                </div>
+            </li>
+          {% else %}
+            <li class="menu-item">
+                <div class="logged-in-info ">
+                    <a class="nav-link">Logged in as {{ user.username }}</a>
+                    <form class="form-inline my-2 my-lg-0" action="{% url 'logout' %}" method="POST">
+                        {% csrf_token %}
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Logout</button>
+                    </form>
+                </div>
             </li>
             <li class="menu-item">
-                {% else %}
-                    <div class="login mr-right">
-                        <a href="{% url 'signin' %}"><p>Zaloguj się</p></a>
-                    </div>
-                {% endif %}
+                <div class="profile-link ">
+                    <a href="{% url 'user_profile' user.username %}">Profil</a>
+                </div>
             </li>
-            <li class="menu-item">
-                {% if user.is_authenticated %}
-                    <a href="{% url 'user_profile' user.username %}">Profil </a>
-                {% endif %}
-            </li>
+        {% endif %}
         </ul>
   </nav>
 

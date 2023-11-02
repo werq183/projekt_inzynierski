@@ -2,7 +2,7 @@
 {% load static %}
 
 
-{% block head %}
+{% block css %}
 <link rel="stylesheet" href="{% static 'css/registration.css' %}">
 {% endblock %}
 
@@ -21,6 +21,7 @@
                 {% endfor %}
             {% endif %}
             <button type="submit" class="btn btn-primary">Zaloguj</button>
+            <p class="ref">Nie masz konta? <a href="{% url 'signup' %}">Zarejestruj się</a></p>
         </form>
 
     </main>

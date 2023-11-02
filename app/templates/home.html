@@ -5,18 +5,17 @@
     <link href="{% static 'css/style-home.css' %}" rel="stylesheet">
 {% endblock %}
 
-
 {% block content %}
     <div id="slideshow">
-        {% for image in images %}
-            <img src="{{ image.photo.url }}" alt="{{ image.photo.name }}" >
-        {% endfor %}
+        <div id="clickArea" class="click-area">
+            {% for image in images %}
+                <img src="{{ image.photo.url }}" alt="{{ image.photo.name }}" >
+            {% endfor %}
+        </div>
     </div>
 
-    <button id="prevBtn">Poprzednie</button>
-    <button id="nextBtn">Następne</button>
-
+    <button id="prevBtn"><i class="arrow left"></i></button>
+    <button id="nextBtn"><i class="arrow right"></i></button>
 
     <script src="{% static 'js/slider.js'%}"></script>
-
 {% endblock %}

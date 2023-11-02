@@ -91,7 +91,7 @@ def user_profile(request, username):
         form = UserProfileForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Profile updated successfully')
+            messages.success(request, 'Dane zaktualizowane pomyślnie.')
             new_username = form.cleaned_data['username']
             return redirect('user_profile', username=new_username)
     else:
