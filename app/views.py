@@ -1,12 +1,13 @@
 import string
 from random import choice
 
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, reverse, get_object_or_404, redirect
 from django.contrib import messages
 
-from .models import Artist, Image, Gallery
+from .models import Artist, Image
 
 from django.contrib.auth.views import LoginView
 from django.http import JsonResponse
@@ -99,3 +100,7 @@ def user_profile(request, username):
 
     return render(request, 'profile.html', {'form': form, 'is_owner': is_owner, 'target_user': user})
 
+
+def logout_view(request):
+    logout(request)
+    return render(request, 'logged-out.html')

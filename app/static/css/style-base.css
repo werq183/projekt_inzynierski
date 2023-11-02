@@ -14,10 +14,6 @@ html, body {
   box-sizing: border-box;
 }
 
-a {
-  text-decoration: none;
-  color: #000000;
-}
 
 .logo {
   height: 70px;
@@ -44,6 +40,15 @@ a {
   color: #FFF;
   height: 6rem;
   padding: 1em;
+}
+
+.top-nav a {
+    color: #000000;
+    text-decoration: none; /* Usuwa podkreślenie odnośnika */
+}
+
+.top-nav a:hover {
+    color: #000000; /* Kolor odnośnika podczas najechania */
 }
 
 .menu {

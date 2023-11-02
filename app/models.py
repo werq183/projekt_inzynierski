@@ -33,19 +33,6 @@ class AI(models.Model):
         ordering = ['name']
 
 
-class Gallery(models.Model):
-    name = models.CharField(max_length=100)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"{self.name}"
-
-    class Meta:
-        verbose_name = 'Galeria'
-        verbose_name_plural = 'Galerie'
-        ordering = ['name']
-
-
 class Subject(models.Model):
     title = models.CharField(max_length=100)
 
@@ -71,4 +58,3 @@ class Image(models.Model):
         verbose_name = 'Obraz'
         verbose_name_plural = 'Obrazy'
         ordering = ['photo']
-

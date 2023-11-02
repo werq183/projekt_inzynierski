@@ -12,8 +12,8 @@ urlpatterns = [
     path("galleries/", galleries, name="galleries"),
     path("generate-password", password, name="password"),
     path("signup", SignUp.as_view(), name="signup"),
-    path("signin", SignIn.as_view(), name="signin",),
-    path("logout", LogoutView.as_view(), name="logout"),
+    path("signin", SignIn.as_view(), name="signin"),
+    path("logged-out/", LogoutView.as_view(template_name='logged-out.html'), name="logout_view"),
     path('artists/<int:artist_id>/', views.artist_detail, name='artist_detail'),
     path('profile/<str:username>/', views.user_profile, name='user_profile'),
 ]
