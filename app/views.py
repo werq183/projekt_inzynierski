@@ -6,14 +6,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, reverse, get_object_or_404, redirect
 from django.contrib import messages
-
 from .models import Artist, Image
 
 from django.contrib.auth.views import LoginView
 from django.http import JsonResponse
 from django.views.generic import CreateView
 
-from .forms import CustomAuthenticationForm, CustomUserCreationForm, UserProfileForm
+from .forms import CustomAuthenticationForm, CustomUserCreationForm, UserProfileForm, ImageSearchForm
+
 '''def index(request):
     return HttpResponse("Hello, world. You're at the app index.")'''
 
@@ -32,15 +32,6 @@ def artists(request):
 def artist_detail(request, artist_id):
     artist = get_object_or_404(Artist, pk=artist_id)
     return render(request, 'artist-detail.html', {'artist': artist})
-
-
-def galleries(request):
-    user = request.user
-    is_authenticated = user.is_authenticated
-    galerie = None
-    if is_authenticated:
-        galerie = Gallery.objects.filter(user=user)
-    return render(request, 'galleries.html', {'is_authenticated': is_authenticated, 'galleries': galerie})
 
 
 def password(request):
@@ -104,3 +95,21 @@ def user_profile(request, username):
 def logout_view(request):
     logout(request)
     return render(request, 'logged-out.html')
+
+
+def search_images(request):
+    form = ImageSearchForm(request.GET or None)
+    images = Image.objects.all()
+
+    if form.is_valid():
+        artists = form.cleaned_data['artists']
+        subjects = form.cleaned_data['subjects']
+
+        if artists:
+            images = images.filter(style__in=artists)
+        if subjects:
+            images = images.filter(subject__in=subjects)
+
+    return render(request, 'img-search.html', {'form': form, 'images': images})
+
+

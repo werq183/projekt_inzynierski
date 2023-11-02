@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    <link href="{% static 'css/style-img-search.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<form method="get">
+    {{ form.as_p }}
+    <button type="submit">Wyświetl</button>
+</form>
+
+{% if images %}
+    {% for image in images %}
+        <img src="{{ image.photo.url }}" alt="{{ image.photo.name }}">
+    {% endfor %}
+{% else %}
+    <p>Nie znaleziono obrazów spełniających kryteria.</p>
+{% endif %}
+{% endblock %}

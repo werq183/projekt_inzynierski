@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import (AuthenticationForm, UserCreationForm,
                                        UsernameField)
 
-from .models import User
+from .models import User, Artist, Subject
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -86,3 +86,15 @@ class UserProfileForm(forms.ModelForm):
         model = User
         fields = ['username', 'email']
 
+
+class ImageSearchForm(forms.Form):
+    artists = forms.ModelMultipleChoiceField(
+        queryset=Artist.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+    )
+    subjects = forms.ModelMultipleChoiceField(
+        queryset=Subject.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+    )

@@ -4,12 +4,12 @@ from django.conf.urls.static import static
 from django.contrib.auth.views import LogoutView
 
 from . import views
-from .views import home, artists, galleries, SignIn, SignUp, password, user_profile
+from .views import home, artists, SignIn, SignUp, password, user_profile
 
 urlpatterns = [
     path("", views.home, name="home"),
     path("artists/", artists, name="artists"),
-    path("galleries/", galleries, name="galleries"),
+    path('search/', views.search_images, name='search_images'),
     path("generate-password", password, name="password"),
     path("signup", SignUp.as_view(), name="signup"),
     path("signin", SignIn.as_view(), name="signin"),
