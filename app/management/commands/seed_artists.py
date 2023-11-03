@@ -9,7 +9,7 @@ class Command(BaseCommand):
     help = 'Load data from CSV file'
 
     def handle(self, *args, **kwargs):
-        with open('app/data/artists.csv') as f:
+        with open('app/data/artists.csv', encoding='utf-8') as f:
             reader = csv.reader(f)
             next(reader, None)
             for row in reader:
