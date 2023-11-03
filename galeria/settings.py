@@ -72,6 +72,9 @@ TEMPLATES = [
     },
 ]
 
+MESSAGE_STORAGE = 'django.contrib.messages.storage.fallback.FallbackStorage'
+
+
 WSGI_APPLICATION = 'galeria.wsgi.application'
 
 # Database

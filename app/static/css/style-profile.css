@@ -82,10 +82,9 @@ h1, h2 {
 
 /* Style dla komunikatów */
 .messages div {
-
     margin-top: 15px;
-    border-radius: 8px;
-    background-color: #d5c9df; /* Jaśniejsze tło dla komunikatów */
+    margin-bottom: 2em;
+    background-color: #FFF; /* Jaśniejsze tło dla komunikatów */
     text-align: center;
     color: #828A95; /* Kolor tekstu dla komunikatów */
 }

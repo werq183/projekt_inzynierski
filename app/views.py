@@ -2,7 +2,8 @@ import string
 import random
 from random import choice, sample
 
-from django.contrib.auth import logout
+from django.contrib.auth import logout, update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
 from django.shortcuts import render, reverse, get_object_or_404, redirect
 from django.contrib import messages
@@ -76,20 +77,42 @@ class SignIn(LoginView):
 
 
 def user_profile(request, username):
+
     user = get_object_or_404(User, username=username)
     is_owner = request.user == user
+    form = UserProfileForm(instance=user)  # Define form here for GET requests
+    password_form = PasswordChangeForm(user)  # Define password_form here for GET requests
 
     if request.method == 'POST' and is_owner:
-        form = UserProfileForm(request.POST, instance=user)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Dane zaktualizowane pomyślnie.')
-            new_username = form.cleaned_data['username']
-            return redirect('user_profile', username=new_username)
-    else:
-        form = UserProfileForm(instance=user)
+        if 'update_profile' in request.POST:
+            form = UserProfileForm(request.POST, instance=user)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Dane zaktualizowane pomyślnie.')
+                new_username = form.cleaned_data.get('username')
+                if new_username and new_username != username:
+                    return redirect('user_profile', username=new_username)
+                else:
+                    return redirect('user_profile', username=username)
+            else:
+                messages.error(request, 'Proszę poprawić błędy w formularzu.')
+        elif 'change_password' in request.POST:
+            password_form = PasswordChangeForm(request.user, request.POST)
+            if password_form.is_valid():
+                user = password_form.save()
+                update_session_auth_hash(request, user)  # Important to keep the user logged in
+                messages.success(request, 'Twoje hasło zostało zaktualizowane!')
+                return redirect('user_profile', username=username)
+            else:
+                messages.error(request, 'Popraw błędy w formularzu zmiany hasła.')
 
-    return render(request, 'profile.html', {'form': form, 'is_owner': is_owner, 'target_user': user})
+    # If it's a GET request or there's some error
+    return render(request, 'profile.html', {
+        'form': form,
+        'password_form': password_form,
+        'is_owner': is_owner,
+        'target_user': user
+    })
 
 
 def logout_view(request):
