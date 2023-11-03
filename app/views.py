@@ -1,5 +1,7 @@
+import json
 import string
 import random
+import requests
 from random import choice, sample
 
 from django.contrib.auth import logout, update_session_auth_hash
@@ -8,7 +10,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, reverse, get_object_or_404, redirect
 from django.contrib import messages
 from .models import Artist, Image
-
+from django.conf import settings
 from django.contrib.auth.views import LoginView
 from django.http import JsonResponse
 from django.views.generic import CreateView
@@ -148,4 +150,52 @@ def image_search(request):
     }
 
     return render(request, 'img-search.html', context)
+
+
+def generate_image(request):
+    images_urls = []
+    form_submitted = False  #zmienna śledząca, czy formularz został wysłany
+    if request.method == 'POST':
+        form_submitted = True
+        prompt = request.POST.get('prompt')
+        number_of_images = int(request.POST.get('number_of_images', 1))
+        number_of_images = max(1, min(number_of_images, 30))  # Ogranicz zakres od 1 do 30
+
+        # URL do API Stable Diffusion
+        api_url = 'https://stablediffusionapi.com/api/v3/text2img'
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        payload = {
+            "key": settings.STABLE_DIFFUSION_API_KEY,
+            "prompt": prompt,
+            "width": 512,
+            "height": 512,
+            "num_inference_steps": 20,
+            "guidance_scale": 7.5,
+            "safety_checker": True,
+            "multi_lingual": "yes"
+        }
+
+        # Iteruj przez liczbę wybranych obrazów
+        for _ in range(number_of_images):
+            response = requests.post(api_url, headers=headers, json=payload)
+            if response.status_code == 200:
+                response_data = response.json()
+                # Sprawdź, czy odpowiedź zawiera klucz 'output'
+                if 'output' in response_data:
+                    images_urls.append(response_data['output'][0])
+                else:
+                    # Jeśli nie ma klucza 'output', obsłuż brak danych
+                    error = response_data.get('error', 'Odpowiedź API nie zawiera oczekiwanych danych.')
+                    return render(request, 'generate_image.html', {'error': error})
+            else:
+                error = "Wystąpił błąd przy generowaniu obrazu."
+                if response.json():
+                    error = response.json().get('error', error)
+                return render(request, 'generate_image.html', {'error': error})
+
+        return render(request, 'generate_image.html', {'images_urls': images_urls, 'form_submitted': form_submitted})
+
+    return render(request, 'generate_image.html')
 

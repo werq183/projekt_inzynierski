@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    <link href="{% static 'css/style-generate-image.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<form method="post" id="image-form">
+    {% csrf_token %}
+    <label for="prompt">Wpisz zapytanie:</label>
+    <textarea id="prompt" name="prompt" required rows="4" cols="50"></textarea>
+    <label for="number_of_images">Ilość obrazów (1-30):</label>
+    <input type="number" id="number_of_images" name="number_of_images" min="1" max="30" required>
+    <button type="submit">Generuj obraz</button>
+</form>
+
+
+<div id="loading-message" style="display: none;">
+    <p>Ładowanie obrazów, proszę czekać...</p>
+</div>
+
+{% if images_urls %}
+    <div id="images-container">
+    {% for image_url in images_urls %}
+        <div class="thumbnail">
+            <img src="{{ image_url }}" alt="Wygenerowany obraz" onload="imageLoaded()">
+        </div>
+    {% endfor %}
+    </div>
+{% endif %}
+
+{% if error %}
+    <p>Błąd: {{ error }}</p>
+{% endif %}
+
+<script>
+    document.getElementById('image-form').onsubmit = function() {
+        document.getElementById('loading-message').style.display = 'block';
+    };
+
+    function imageLoaded() {
+        var imagesContainer = document.getElementById('images-container');
+        var images = imagesContainer.getElementsByTagName('img');
+        var allImagesLoaded = true;
+        for (var i = 0; i < images.length; i++) {
+            if (!images[i].complete) {
+                allImagesLoaded = false;
+                break;
+            }
+        }
+        if (allImagesLoaded) {
+            document.getElementById('loading-message').style.display = 'none';
+        }
+    }
+</script>
+{% endblock %}

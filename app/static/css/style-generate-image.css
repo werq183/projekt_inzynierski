@@ -1,0 +1,108 @@
+/* Kolory z palety */
+:root {
+    --main-text: #828A95;
+    --light-blue: #CEEAF7;
+    --light-gray: #CCD7E4;
+    --light-purple: #D5C9DF;
+    --dark-purple: #DCB8CB;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+}
+
+/* Styl dla formularza */
+#image-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+#image-form label {
+    margin: 10px 0;
+    color: var(--main-text);
+    font-size: 1.2em;
+}
+
+#image-form input,
+#image-form textarea,
+#image-form button {
+    padding: 10px;
+    margin-bottom: 10px; /* Margines dolny między elementami formularza */
+    border: 1px solid var(--light-gray);
+    border-radius: 5px;
+}
+
+#image-form button {
+    background-color: var(--light-blue);
+    color: var(--main-text);
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#image-form button:hover {
+    background-color: var(--dark-purple);
+}
+
+/* Styl dla komunikatu ładowania */
+#loading-message p {
+    color: var(--main-text);
+    text-align: center;
+    font-size: 1.2em;
+}
+
+/* Styl dla wygenerowanych obrazów */
+#images-container img {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    border: 1px solid var(--light-gray);
+    margin: 10px; /* Margines dookoła obrazów */
+    transition: transform 0.3s;
+}
+
+
+#images-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px; /* Odstęp między obrazami */
+}
+
+.thumbnail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--light-gray);
+    padding: 15px;
+    transition: transform 0.3s;
+    cursor: pointer;
+}
+
+.thumbnail:hover {
+    transform: scale(0.95);
+    border: 1px solid var(--dark-purple);
+}
+
+.thumbnail img {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    object-fit: cover;
+    margin-bottom: 10px; /* Margines dolny między zdjęciem a podpisem */
+}
+
+
+@media (max-width: 768px) {
+    #image-form {
+        width: 90%;
+    }
+
+
+    .thumbnail img {
+        max-width: 90%;
+    }
+}
