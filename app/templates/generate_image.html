@@ -6,52 +6,79 @@
 {% endblock %}
 
 {% block content %}
-<form method="post" id="image-form">
-    {% csrf_token %}
-    <label for="prompt">Wpisz zapytanie:</label>
-    <textarea id="prompt" name="prompt" required rows="4" cols="50"></textarea>
-    <label for="number_of_images">Ilość obrazów (1-30):</label>
-    <input type="number" id="number_of_images" name="number_of_images" min="1" max="30" required>
-    <button type="submit">Generuj obraz</button>
-</form>
 
-
-<div id="loading-message" style="display: none;">
-    <p>Ładowanie obrazów, proszę czekać...</p>
-</div>
-
-{% if images_urls %}
-    <div id="images-container">
-    {% for image_url in images_urls %}
-        <div class="thumbnail">
-            <img src="{{ image_url }}" alt="Wygenerowany obraz" onload="imageLoaded()">
-        </div>
-    {% endfor %}
+    <div class="head">
+        <h1>Wygeneruj swoje zdjęcie:</h1>
     </div>
-{% endif %}
 
-{% if error %}
-    <p>Błąd: {{ error }}</p>
-{% endif %}
+    <div class="container mt-5">
+        <form method="post" id="image-form" class="text-center">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="prompt" class="form-label">Wpisz zapytanie:</label>
+                    <!-- Ustawienie wartości textarea na wartość prompt -->
+                    <textarea id="prompt" name="prompt" required rows="4" class="form-control">{{ request.POST.prompt|default:"Tu wpisz swoje zapytanie" }}</textarea>
+                </div>
+                <div class="col-md-6">
+                    <label for="negative_prompt" class="form-label">Wpisz negatywne zapytanie:</label>
+                    <!-- Ustawienie wartości textarea na wartość negative_prompt -->
+                    <textarea id="negative_prompt" name="neagtive_prompt" rows="4" class="form-control">{{ request.POST.negative_prompt|default:"ugly, deformed, poor quality" }}</textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <label for="number_of_images" class="form-label">Ilość obrazów (1-10):</label>
+                    <!-- Ustawienie wartości input na wartość number_of_images -->
+                    <input type="number" id="number_of_images" name="number_of_images" value="{{ request.POST.number_of_images|default:1 }}" min="1" max="30" required class="form-control">
+                </div>
+            </div>
 
-<script>
-    document.getElementById('image-form').onsubmit = function() {
-        document.getElementById('loading-message').style.display = 'block';
-    };
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="width" class="form-label">Szerokość:</label>
+                    <input type="number" id="width-number" name="width" value="{{ request.POST.width|default:512 }}" min="256" max="1024" class="form-control" oninput="this.nextElementSibling.value = this.value">
+                    <input type="range" id="width" name="width" min="256" max="1024" value="{{ request.POST.width|default:512 }}" class="form-slider" oninput="this.previousElementSibling.value = this.value">
+                </div>
+                <div class="col-md-4">
+                    <label for="height" class="form-label">Wysokość:</label>
+                    <input type="number" id="height-number" name="height" value="{{ request.POST.height|default:512 }}" min="256" max="1024" class="form-control" oninput="this.nextElementSibling.value = this.value">
+                    <input type="range" id="height" name="height" min="256" max="1024" value="{{ request.POST.height|default:512  }}" class="form-slider" oninput="this.previousElementSibling.value = this.value">
+                </div>
+                <div class="col-md-4">
+                    <label for="num_inference_steps" class="form-label">Ilość kroków:</label>
+                    <input type="number" id="num_inference_steps-number" name="num_inference_steps" value="{{ request.POST.num_inference_steps|default:20 }}" min="1" max="100" class="form-control" oninput="this.nextElementSibling.value = this.value">
+                    <input type="range" id="num_inference_steps" name="num_inference_steps" min="1" max="100" value="{{ request.POST.num_inference_steps|default:20 }}" class="form-slider" oninput="this.previousElementSibling.value = this.value">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Generuj obraz</button>
+        </form>
 
-    function imageLoaded() {
-        var imagesContainer = document.getElementById('images-container');
-        var images = imagesContainer.getElementsByTagName('img');
-        var allImagesLoaded = true;
-        for (var i = 0; i < images.length; i++) {
-            if (!images[i].complete) {
-                allImagesLoaded = false;
-                break;
-            }
-        }
-        if (allImagesLoaded) {
-            document.getElementById('loading-message').style.display = 'none';
-        }
-    }
-</script>
+        <div id="loading-message" class="text-center" style="display: none;">
+            <p class="ref">
+                Ładowanie obrazów, proszę czekać...<br>
+                W międzyczasie obejrzyj inne obrazy --> <a href="{% url 'search_images' %}" target="_blank">kliknij tutaj</a>
+            </p>
+        </div>
+
+        {% if images_urls %}
+            <div id="images-container" class="row">
+            {% for image_url in images_urls %}
+                <div class="col-lg-6 col-md-12 col-sm-12 mb-3">
+                    <div class="card">
+                        <a href="{{ image_url }}" target="_blank">
+                            <img src="{{ image_url }}" class="card-img-top" alt="Wygenerowany obraz" title="{{ request.POST.prompt }}" onload="imageLoaded()" >
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if error %}
+            <p class="text-danger">{{ error }}</p>
+        {% endif %}
+    </div>
+
+    <script src="{% static 'js/loading.js' %}"></script>
 {% endblock %}

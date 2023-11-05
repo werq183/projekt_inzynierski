@@ -11,12 +11,22 @@ body {
     font-family: 'Arial', sans-serif;
 }
 
-/* Styl dla formularza */
-#image-form {
-    display: flex;
-    flex-direction: column;
+.head h1{
     align-items: center;
     justify-content: center;
+    text-align: center;
+    margin-bottom: 2.5em;
+    margin-top: 2.5em;
+    color: #dcb8cb;
+}
+
+.ref a{
+    color: #CEEAF7;
+    text-decoration: none;
+}
+
+/* Styl dla formularza */
+#image-form {
     margin-top: 20px;
 }
 
@@ -40,6 +50,7 @@ body {
     color: var(--main-text);
     cursor: pointer;
     transition: background-color 0.3s;
+    margin-bottom: 2em;
 }
 
 #image-form button:hover {
@@ -54,53 +65,22 @@ body {
 }
 
 /* Styl dla wygenerowanych obrazów */
-#images-container img {
-    width: 100%;
-    max-width: 400px;
-    height: auto;
-    border: 1px solid var(--light-gray);
-    margin: 10px; /* Margines dookoła obrazów */
+.card {
     transition: transform 0.3s;
 }
 
-
-#images-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 30px; /* Odstęp między obrazami */
-}
-
-.thumbnail {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid var(--light-gray);
-    padding: 15px;
-    transition: transform 0.3s;
-    cursor: pointer;
-}
-
-.thumbnail:hover {
+.card:hover {
     transform: scale(0.95);
-    border: 1px solid var(--dark-purple);
 }
 
-.thumbnail img {
-    width: 100%;
-    max-width: 400px;
-    height: auto;
+.card-img-top {
     object-fit: cover;
-    margin-bottom: 10px; /* Margines dolny między zdjęciem a podpisem */
 }
-
 
 @media (max-width: 768px) {
     #image-form {
         width: 90%;
     }
-
 
     .thumbnail img {
         max-width: 90%;

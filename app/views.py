@@ -168,8 +168,14 @@ async def generate_image(request):
     if request.method == 'POST':
         form_submitted = True
         prompt = request.POST.get('prompt')
+        negative_prompt = request.POST.get('negative_prompt')
+        if negative_prompt is None:
+            negative_prompt = ""
         number_of_images = int(request.POST.get('number_of_images', 1))
-        number_of_images = max(1, min(number_of_images, 30))  # Ogranicz zakres od 1 do 30
+        number_of_images = max(1, min(number_of_images, 10))  # Ogranicz zakres od 1 do 10
+        width = int(request.POST.get('width', 512))  # get width from POST data with default value
+        height = int(request.POST.get('height', 512))  # get height from POST data with default value
+        num_inference_steps = int(request.POST.get('num_inference_steps', 20))  # get steps from POST data
 
         # URL do API Stable Diffusion
         api_url = 'http://10.0.10.30:7861'
@@ -178,12 +184,12 @@ async def generate_image(request):
         }
         payload = {
             "prompt": prompt,
-            "width": 512,
-            "height": 512,
-            "num_inference_steps": 20,
+            "negative_prompt": negative_prompt,
+            "width": width,
+            "height": height,
+            "num_inference_steps": num_inference_steps,
             "guidance_scale": 7.5,
             "safety_checker": True,
-            "multi_lingual": "yes"
         }
 
         # Iteruj przez liczbę wybranych obrazów
@@ -204,5 +210,21 @@ async def generate_image(request):
                     error = response.json().get('error', error)
                 return render(request, 'generate_image.html', {'error': error})
         return render(request, 'generate_image.html', {'images_urls': images, 'form_submitted': form_submitted})
-
-    return render(request, 'generate_image.html')
+    else:
+        # Ustaw domyślne wartości dla formularza, które będą wyświetlane początkowo
+        prompt = "Tu wpisz swoje zapytanie"
+        negative_prompt = "ugly, deformed, poor quality"
+        number_of_images = 1
+        width = 512
+        height = 512
+        num_inference_steps = 20
+    context = {
+        'images_urls': images,
+        'prompt': prompt,
+        'negative_prompt': negative_prompt,
+        'number_of_images': number_of_images,
+        'width': width,
+        'height': height,
+        'num_inference_steps': num_inference_steps,
+    }
+    return render(request, 'generate_image.html', context)

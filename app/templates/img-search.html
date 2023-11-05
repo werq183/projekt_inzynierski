@@ -35,12 +35,14 @@
         </div>
     {% endif %}
 
-    <div class="result-container row"> <!-- Add the 'row' class here -->
+    <div class="result-container row">
     {% if images %}
         {% for image in images %}
-            <div class="col-md-6"> <!-- This specifies each image should take up 6 columns on medium devices, hence 2 images per row -->
+            <div class="col-md-6">
                 <div class="image-container">
-                    <img src="{{ image.photo.url }}" alt="{{ image.photo.name }}">
+                    <a href="{{ image.photo.url }}" target="_blank">
+                        <img src="{{ image.photo.url }}" alt="{{ image.photo.name }}" title="Artysta: {{ image.style }}   Temat: {{ image.subject }}">
+                    </a>
                 </div>
             </div>
         {% endfor %}

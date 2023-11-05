@@ -59,11 +59,13 @@
         </ul>
   </nav>
 
+
   {% block content %}
   {% endblock %}
 
 
-<div class="footer-basic">
+    <button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
+    <div class="footer-basic">
         <footer>
             <ul class="list-inline">
                 <li class="list-inline-item"><a href="{% url 'home' %}">Home</a></li>
@@ -77,6 +79,7 @@
 <!-- Bootstrap core JavaScript-->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+  <script src="{% static 'js/sticky-button.js' %}"></script>
 
 </body>
 </html>
