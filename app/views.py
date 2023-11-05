@@ -153,7 +153,7 @@ def image_search(request):
 
 
 def generate_image(request):
-    images_urls = []
+    images = []
     form_submitted = False  #zmienna śledząca, czy formularz został wysłany
     if request.method == 'POST':
         form_submitted = True
@@ -162,12 +162,11 @@ def generate_image(request):
         number_of_images = max(1, min(number_of_images, 30))  # Ogranicz zakres od 1 do 30
 
         # URL do API Stable Diffusion
-        api_url = 'https://stablediffusionapi.com/api/v3/text2img'
+        api_url = 'http://10.0.10.30:7861'
         headers = {
             'Content-Type': 'application/json'
         }
         payload = {
-            "key": settings.STABLE_DIFFUSION_API_KEY,
             "prompt": prompt,
             "width": 512,
             "height": 512,
@@ -179,12 +178,13 @@ def generate_image(request):
 
         # Iteruj przez liczbę wybranych obrazów
         for _ in range(number_of_images):
-            response = requests.post(api_url, headers=headers, json=payload)
+            response = requests.post(api_url + '/sdapi/v1/txt2img', headers=headers, json=payload)
             if response.status_code == 200:
                 response_data = response.json()
                 # Sprawdź, czy odpowiedź zawiera klucz 'output'
                 if 'output' in response_data:
-                    images_urls.append(response_data['output'][0])
+                    images.append(response_data['images'][0])
+                    print(images)
                 else:
                     # Jeśli nie ma klucza 'output', obsłuż brak danych
                     error = response_data.get('error', 'Odpowiedź API nie zawiera oczekiwanych danych.')
@@ -194,8 +194,8 @@ def generate_image(request):
                 if response.json():
                     error = response.json().get('error', error)
                 return render(request, 'generate_image.html', {'error': error})
-
-        return render(request, 'generate_image.html', {'images_urls': images_urls, 'form_submitted': form_submitted})
+            print(response)
+        return render(request, 'generate_image.html', {'images_urls': images, 'form_submitted': form_submitted})
 
     return render(request, 'generate_image.html')
 
