@@ -1,3 +1,6 @@
 .idea
 __pycache__
 db.sqlite3
+mediafiles/*
+app/data/artists_images
+app/data/images

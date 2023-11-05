@@ -87,6 +87,18 @@ class UserProfileForm(forms.ModelForm):
         model = User
         fields = ['username', 'email']
 
+    def clean_username(self):
+        username = self.cleaned_data['username']
+        if User.objects.filter(username=username).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError('Użytkownik o tej nazwie już istnieje.')
+        return username
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if User.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError('Użytkownik z tym adresem e-mail już istnieje.')
+        return email
+
 
 class ImageSearchForm(forms.Form):
     artists = forms.ModelMultipleChoiceField(

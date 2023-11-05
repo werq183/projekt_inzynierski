@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'websockets'
 ]
 
 MEDIA_URL = '/media/'
@@ -72,7 +73,12 @@ TEMPLATES = [
     },
 ]
 
+MESSAGE_STORAGE = 'django.contrib.messages.storage.fallback.FallbackStorage'
+
+STABLE_DIFFUSION_API_KEY = "Q4ysMh53Un4NxLbJdODNlHPlAEx7wUkTlPtdyQx6mHKyCEilweMNRulcL0fW"
+
 WSGI_APPLICATION = 'galeria.wsgi.application'
+
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

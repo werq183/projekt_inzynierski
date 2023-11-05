@@ -10,15 +10,17 @@
     <h2>Wyszukiwarka zdjęć</h2>
     <form method="post">
         {% csrf_token %}
-        <div class="form-group">
-            <!--{{ form.artists.label_tag }}-->
-            Artyści:
-            {{ form.artists }}
-        </div>
-        <div class="form-group">
-            <!--{{ form.subjects.label_tag }}-->
-            Tematy:
-            {{ form.subjects }}
+        <div class="row">
+            <div class="form-group col-xl-6">
+                <!--{{ form.artists.label_tag }}-->
+                Artyści:
+                {{ form.artists }}
+            </div>
+            <div class="form-group col-xl-6">
+                <!--{{ form.subjects.label_tag }}-->
+                Tematy:
+                {{ form.subjects }}
+            </div>
         </div>
         <button type="submit" class="btn search-btn">Wyświetl</button>
     </form>
@@ -33,16 +35,20 @@
         </div>
     {% endif %}
 
-    <div class="result-container">
-        {% if images %}
-            {% for image in images %}
+    <div class="result-container row">
+    {% if images %}
+        {% for image in images %}
+            <div class="col-md-6">
                 <div class="image-container">
-                    <img src="{{ image.photo.url }}" alt="{{ image.photo.name }}">
+                    <a href="{{ image.photo.url }}" target="_blank">
+                        <img src="{{ image.photo.url }}" alt="{{ image.photo.name }}" title="Artysta: {{ image.style }}   Temat: {{ image.subject }}">
+                    </a>
                 </div>
-            {% endfor %}
-        {% else %}
-            <p>Brak dostępnych zdjęć dla wybranych kryteriów.</p>
-        {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Brak dostępnych zdjęć dla wybranych kryteriów.</p>
+    {% endif %}
     </div>
 </div>
 {% endblock %}

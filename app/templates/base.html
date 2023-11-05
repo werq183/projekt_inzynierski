@@ -28,6 +28,7 @@
           <li class="menu-item"><a href="{% url 'home' %}">Strona główna</a></li>
           <li class="menu-item"><a href="{% url 'artists' %}">Artyści</a></li>
           <li class="menu-item"><a href="{% url 'search_images' %}">Wyszukaj</a></li>
+          <li class="menu-item"><a href="{% url 'generate_image' %}">Wygeneruj</a></li>
           {% if not user.is_authenticated %}
             <li class="menu-item">
                 <div class="login ">
@@ -58,20 +59,19 @@
         </ul>
   </nav>
 
+
   {% block content %}
   {% endblock %}
 
 
-<div class="footer-basic">
+    <button onclick="topFunction()" id="myBtn" title="Go to top">&#8679;</button>
+    <div class="footer-basic">
         <footer>
             <ul class="list-inline">
-                <li class="list-inline-item"><a href="#">Home</a></li>
-                <li class="list-inline-item"><a href="#">Services</a></li>
-                <li class="list-inline-item"><a href="#">About</a></li>
-                <li class="list-inline-item"><a href="#">Terms</a></li>
-                <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
+                <li class="list-inline-item"><a href="{% url 'home' %}">Strona główna</a></li>
+                <li class="list-inline-item"><a href="https://stablediffusionweb.com/" target="_blank">Stable Diffusion</a></li>
             </ul>
-            <p class="copyright">Copyright &copy; 2023</p>
+            <p class="copyright">Copyright: Weronika Kot &copy; 2023</p>
         </footer>
     </div>
 
@@ -79,6 +79,7 @@
 <!-- Bootstrap core JavaScript-->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+  <script src="{% static 'js/sticky-button.js' %}"></script>
 
 </body>
 </html>

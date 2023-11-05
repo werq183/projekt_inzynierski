@@ -1,16 +1,27 @@
+import json
 import string
 import random
+import requests
 from random import choice, sample
 
-from django.contrib.auth import logout
+from asgiref.sync import sync_to_async
+from django.shortcuts import render
+from django.template.loader import render_to_string
+from django.contrib.auth import logout, update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
 from django.shortcuts import render, reverse, get_object_or_404, redirect
 from django.contrib import messages
 from .models import Artist, Image
-
+from django.conf import settings
 from django.contrib.auth.views import LoginView
-from django.http import JsonResponse
+from asgiref.sync import async_to_sync
+from django.http import JsonResponse, HttpResponse
 from django.views.generic import CreateView
+
+from django.http import JsonResponse
+import httpx
+import asyncio
 
 from .forms import CustomAuthenticationForm, CustomUserCreationForm, UserProfileForm, ImageSearchForm
 
@@ -78,18 +89,39 @@ class SignIn(LoginView):
 def user_profile(request, username):
     user = get_object_or_404(User, username=username)
     is_owner = request.user == user
+    form = UserProfileForm(instance=user)  # Define form here for GET requests
+    password_form = PasswordChangeForm(user)  # Define password_form here for GET requests
 
     if request.method == 'POST' and is_owner:
-        form = UserProfileForm(request.POST, instance=user)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Dane zaktualizowane pomyślnie.')
-            new_username = form.cleaned_data['username']
-            return redirect('user_profile', username=new_username)
-    else:
-        form = UserProfileForm(instance=user)
+        if 'update_profile' in request.POST:
+            form = UserProfileForm(request.POST, instance=user)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Dane zaktualizowane pomyślnie.')
+                new_username = form.cleaned_data.get('username')
+                if new_username and new_username != username:
+                    return redirect('user_profile', username=new_username)
+                else:
+                    return redirect('user_profile', username=username)
+            else:
+                messages.error(request, 'Proszę poprawić błędy w formularzu.')
+        elif 'change_password' in request.POST:
+            password_form = PasswordChangeForm(request.user, request.POST)
+            if password_form.is_valid():
+                user = password_form.save()
+                update_session_auth_hash(request, user)  # Important to keep the user logged in
+                messages.success(request, 'Twoje hasło zostało zaktualizowane!')
+                return redirect('user_profile', username=username)
+            else:
+                messages.error(request, 'Popraw błędy w formularzu zmiany hasła.')
 
-    return render(request, 'profile.html', {'form': form, 'is_owner': is_owner, 'target_user': user})
+    # If it's a GET request or there's some error
+    return render(request, 'profile.html', {
+        'form': form,
+        'password_form': password_form,
+        'is_owner': is_owner,
+        'target_user': user
+    })
 
 
 def logout_view(request):
@@ -126,3 +158,87 @@ def image_search(request):
 
     return render(request, 'img-search.html', context)
 
+
+async def send_async_request(api_url, payload, headers):
+    async with httpx.AsyncClient() as client:
+        response = await client.post(api_url, headers=headers, json=payload, timeout=3600)
+        return response
+
+
+async def generate_image(request):
+    images = []
+    form_submitted = False  # zmienna śledząca, czy formularz został wysłany
+    if request.method == 'POST':
+        form_submitted = True
+        prompt = request.POST.get('prompt')
+        negative_prompt = request.POST.get('negative_prompt')
+        if negative_prompt is None:
+            negative_prompt = ""
+        number_of_images = int(request.POST.get('number_of_images', 1))
+        number_of_images = max(1, min(number_of_images, 10))  # Ogranicz zakres od 1 do 10
+        width = int(request.POST.get('width', 512))  # get width from POST data with default value
+        height = int(request.POST.get('height', 512))  # get height from POST data with default value
+        num_inference_steps = int(request.POST.get('num_inference_steps', 20))  # get steps from POST data
+
+        # URL do API Stable Diffusion
+        api_url = 'http://10.0.10.30:7861'
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        payload = {
+            "prompt": prompt,
+            "negative_prompt": negative_prompt,
+            "width": width,
+            "height": height,
+            "num_inference_steps": num_inference_steps,
+            "guidance_scale": 7.5,
+            "safety_checker": True,
+        }
+
+        # Iteruj przez liczbę wybranych obrazów
+        for _ in range(number_of_images):
+            response = await send_async_request(api_url + '/sdapi/v1/txt2img', payload, headers)
+            if response.status_code == 200:
+                response_data = response.json()
+                # Sprawdź, czy odpowiedź zawiera klucz 'output'
+                if 'images' in response_data:
+                    images.append('data:image/png;base64,' + response_data['images'][0])
+                else:
+                    # Jeśli nie ma klucza 'output', obsłuż brak danych
+                    error = response_data.get('error', 'Odpowiedź API nie zawiera oczekiwanych danych.')
+                    #return render(request, 'generate_image.html', {'error': error})
+                    content = await sync_to_async(render)(request, 'generate_image.html', {'error': error})
+                    return HttpResponse(content.content)
+            else:
+                error = "Wystąpił błąd przy generowaniu obrazu."
+                if response.json():
+                    error = response.json().get('error', error)
+                #return render(request, 'generate_image.html', {'error': error})
+                content = await sync_to_async(render)(request, 'generate_image.html', {'error': error})
+                return HttpResponse(content.content)
+        #return render(request, 'generate_image.html', {'images_urls': images, 'form_submitted': form_submitted})
+        content = await sync_to_async(render)(request, 'generate_image.html', {
+            'images_urls': images,
+            'form_submitted': form_submitted
+        })
+        return HttpResponse(content.content)
+    else:
+        # Ustaw domyślne wartości dla formularza, które będą wyświetlane początkowo
+        prompt = "Tu wpisz swoje zapytanie"
+        negative_prompt = "ugly, deformed, poor quality"
+        number_of_images = 1
+        width = 512
+        height = 512
+        num_inference_steps = 20
+    context = {
+        'user': request.user,
+        'images_urls': images,
+        'prompt': prompt,
+        'negative_prompt': negative_prompt,
+        'number_of_images': number_of_images,
+        'width': width,
+        'height': height,
+        'num_inference_steps': num_inference_steps,
+    }
+    content = await sync_to_async(render)(request, 'generate_image.html', context)
+    return HttpResponse(content.content)

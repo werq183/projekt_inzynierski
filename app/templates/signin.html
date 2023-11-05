@@ -17,7 +17,7 @@
             {% endfor %}
             {% if form.non_field_errors %}
                 {% for error in form.non_field_errors %}
-                {{ error }}
+                {{ error }} <br>
                 {% endfor %}
             {% endif %}
             <button type="submit" class="btn btn-primary">Zaloguj</button>

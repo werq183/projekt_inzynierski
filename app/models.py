@@ -35,6 +35,7 @@ class AI(models.Model):
 
 class Subject(models.Model):
     title = models.CharField(max_length=100)
+    title_en = models.CharField(max_length=100, default="")
 
     def __str__(self):
         return f"{self.title}"

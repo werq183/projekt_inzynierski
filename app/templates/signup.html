@@ -13,7 +13,7 @@
         {% for field in form %}
             {% if field.errors %}
                 {% for error in field.errors %}
-                    {{ error }}
+                    {{ error }} <br>
                 {% endfor %}
             {% endif %}
             {{ field.label_tag }} {{ field }}
