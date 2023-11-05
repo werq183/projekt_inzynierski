@@ -10,15 +10,17 @@
     <h2>Wyszukiwarka zdjęć</h2>
     <form method="post">
         {% csrf_token %}
-        <div class="form-group">
-            <!--{{ form.artists.label_tag }}-->
-            Artyści:
-            {{ form.artists }}
-        </div>
-        <div class="form-group">
-            <!--{{ form.subjects.label_tag }}-->
-            Tematy:
-            {{ form.subjects }}
+        <div class="row">
+            <div class="form-group col-xl-6">
+                <!--{{ form.artists.label_tag }}-->
+                Artyści:
+                {{ form.artists }}
+            </div>
+            <div class="form-group col-xl-6">
+                <!--{{ form.subjects.label_tag }}-->
+                Tematy:
+                {{ form.subjects }}
+            </div>
         </div>
         <button type="submit" class="btn search-btn">Wyświetl</button>
     </form>

@@ -28,6 +28,7 @@
           <li class="menu-item"><a href="{% url 'home' %}">Strona główna</a></li>
           <li class="menu-item"><a href="{% url 'artists' %}">Artyści</a></li>
           <li class="menu-item"><a href="{% url 'search_images' %}">Wyszukaj</a></li>
+          <li class="menu-item"><a href="{% url 'generate_image' %}">Wygeneruj</a></li>
           {% if not user.is_authenticated %}
             <li class="menu-item">
                 <div class="login ">
