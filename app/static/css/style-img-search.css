@@ -36,7 +36,6 @@ h2 {
 }
 
 .image-container {
-    flex-basis: calc(33.33% - 1rem);
     margin-bottom: 1rem;
 }
 

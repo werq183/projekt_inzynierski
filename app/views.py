@@ -12,8 +12,13 @@ from django.contrib import messages
 from .models import Artist, Image
 from django.conf import settings
 from django.contrib.auth.views import LoginView
+from asgiref.sync import async_to_sync
 from django.http import JsonResponse
 from django.views.generic import CreateView
+
+from django.http import JsonResponse
+import httpx
+import asyncio
 
 from .forms import CustomAuthenticationForm, CustomUserCreationForm, UserProfileForm, ImageSearchForm
 
@@ -79,7 +84,6 @@ class SignIn(LoginView):
 
 
 def user_profile(request, username):
-
     user = get_object_or_404(User, username=username)
     is_owner = request.user == user
     form = UserProfileForm(instance=user)  # Define form here for GET requests
@@ -152,9 +156,15 @@ def image_search(request):
     return render(request, 'img-search.html', context)
 
 
-def generate_image(request):
+async def send_async_request(api_url, payload, headers):
+    async with httpx.AsyncClient() as client:
+        response = await client.post(api_url, headers=headers, json=payload, timeout=3600)
+        return response
+
+
+async def generate_image(request):
     images = []
-    form_submitted = False  #zmienna śledząca, czy formularz został wysłany
+    form_submitted = False  # zmienna śledząca, czy formularz został wysłany
     if request.method == 'POST':
         form_submitted = True
         prompt = request.POST.get('prompt')
@@ -178,13 +188,12 @@ def generate_image(request):
 
         # Iteruj przez liczbę wybranych obrazów
         for _ in range(number_of_images):
-            response = requests.post(api_url + '/sdapi/v1/txt2img', headers=headers, json=payload)
+            response = await send_async_request(api_url + '/sdapi/v1/txt2img', payload, headers)
             if response.status_code == 200:
                 response_data = response.json()
                 # Sprawdź, czy odpowiedź zawiera klucz 'output'
-                if 'output' in response_data:
-                    images.append(response_data['images'][0])
-                    print(images)
+                if 'images' in response_data:
+                    images.append('data:image/png;base64,' + response_data['images'][0])
                 else:
                     # Jeśli nie ma klucza 'output', obsłuż brak danych
                     error = response_data.get('error', 'Odpowiedź API nie zawiera oczekiwanych danych.')
@@ -194,8 +203,6 @@ def generate_image(request):
                 if response.json():
                     error = response.json().get('error', error)
                 return render(request, 'generate_image.html', {'error': error})
-            print(response)
         return render(request, 'generate_image.html', {'images_urls': images, 'form_submitted': form_submitted})
 
     return render(request, 'generate_image.html')
-

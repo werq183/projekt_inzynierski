@@ -35,16 +35,18 @@
         </div>
     {% endif %}
 
-    <div class="result-container">
-        {% if images %}
-            {% for image in images %}
+    <div class="result-container row"> <!-- Add the 'row' class here -->
+    {% if images %}
+        {% for image in images %}
+            <div class="col-md-6"> <!-- This specifies each image should take up 6 columns on medium devices, hence 2 images per row -->
                 <div class="image-container">
                     <img src="{{ image.photo.url }}" alt="{{ image.photo.name }}">
                 </div>
-            {% endfor %}
-        {% else %}
-            <p>Brak dostępnych zdjęć dla wybranych kryteriów.</p>
-        {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Brak dostępnych zdjęć dla wybranych kryteriów.</p>
+    {% endif %}
     </div>
 </div>
 {% endblock %}
