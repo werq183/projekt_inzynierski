@@ -4,6 +4,9 @@ import random
 import requests
 from random import choice, sample
 
+from asgiref.sync import sync_to_async
+from django.shortcuts import render
+from django.template.loader import render_to_string
 from django.contrib.auth import logout, update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
@@ -13,7 +16,7 @@ from .models import Artist, Image
 from django.conf import settings
 from django.contrib.auth.views import LoginView
 from asgiref.sync import async_to_sync
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.generic import CreateView
 
 from django.http import JsonResponse
@@ -203,13 +206,22 @@ async def generate_image(request):
                 else:
                     # Jeśli nie ma klucza 'output', obsłuż brak danych
                     error = response_data.get('error', 'Odpowiedź API nie zawiera oczekiwanych danych.')
-                    return render(request, 'generate_image.html', {'error': error})
+                    #return render(request, 'generate_image.html', {'error': error})
+                    content = await sync_to_async(render)(request, 'generate_image.html', {'error': error})
+                    return HttpResponse(content.content)
             else:
                 error = "Wystąpił błąd przy generowaniu obrazu."
                 if response.json():
                     error = response.json().get('error', error)
-                return render(request, 'generate_image.html', {'error': error})
-        return render(request, 'generate_image.html', {'images_urls': images, 'form_submitted': form_submitted})
+                #return render(request, 'generate_image.html', {'error': error})
+                content = await sync_to_async(render)(request, 'generate_image.html', {'error': error})
+                return HttpResponse(content.content)
+        #return render(request, 'generate_image.html', {'images_urls': images, 'form_submitted': form_submitted})
+        content = await sync_to_async(render)(request, 'generate_image.html', {
+            'images_urls': images,
+            'form_submitted': form_submitted
+        })
+        return HttpResponse(content.content)
     else:
         # Ustaw domyślne wartości dla formularza, które będą wyświetlane początkowo
         prompt = "Tu wpisz swoje zapytanie"
@@ -219,6 +231,7 @@ async def generate_image(request):
         height = 512
         num_inference_steps = 20
     context = {
+        'user': request.user,
         'images_urls': images,
         'prompt': prompt,
         'negative_prompt': negative_prompt,
@@ -227,4 +240,5 @@ async def generate_image(request):
         'height': height,
         'num_inference_steps': num_inference_steps,
     }
-    return render(request, 'generate_image.html', context)
+    content = await sync_to_async(render)(request, 'generate_image.html', context)
+    return HttpResponse(content.content)
