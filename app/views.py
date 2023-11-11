@@ -184,7 +184,8 @@ async def generate_image(request):
         seed = int(request.POST.get('seed', -1))
 
         # URL do API Stable Diffusion
-        api_url = 'http://vpn.skmiec.pl:47861'
+        #api_url = 'http://vpn.skmiec.pl:47861'
+        api_url = 'http://10.0.10.30:7861'
         headers = {
             'Content-Type': 'application/json'
         }

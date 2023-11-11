@@ -74,6 +74,9 @@
                             <a href="{{ image_url }}" target="_blank">
                                 <img src="{{ image_url }}" class="card-img-top" alt="Wygenerowany obraz" title="{{ request.POST.prompt }}" onload="imageLoaded()" >
                             </a>
+                            <button onclick="downloadImage('{{ image_url }}')" class="download-btn">
+                                <img src="{% static 'img/download-icon.png' %}" alt="Download">
+                            </button>
                         </div>
                     </div>
                 {% endfor %}
@@ -140,4 +143,5 @@
             </div>
     {% endif %}
     <script src="{% static 'js/loading.js' %}"></script>
+    <script src="{% static 'js/download-image.js'%}"></script>
 {% endblock %}

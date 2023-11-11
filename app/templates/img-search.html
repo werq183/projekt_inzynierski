@@ -43,6 +43,9 @@
                     <a href="{{ image.photo.url }}" target="_blank">
                         <img src="{{ image.photo.url }}" alt="{{ image.photo.name }}" title="Artysta: {{ image.style }}   Temat: {{ image.subject }}">
                     </a>
+                    <button onclick="downloadImage('{{ image.photo.url }}')" class="download-btn">
+                        <img src="{% static 'img/download-icon.png' %}" alt="Download">
+                    </button>
                 </div>
             </div>
         {% endfor %}
@@ -51,4 +54,5 @@
     {% endif %}
     </div>
 </div>
+<script src="{% static 'js/download-image.js'%}"></script>
 {% endblock %}

@@ -43,12 +43,12 @@ html, body {
 }
 
 .top-nav a {
-    color: #000000;
-    text-decoration: none; /* Usuwa podkreślenie odnośnika */
+    color: #000;
+    text-decoration: none;
 }
 
 .top-nav a:hover {
-    color: #000000; /* Kolor odnośnika podczas najechania */
+    color: #000;
 }
 
 .menu {
@@ -162,7 +162,7 @@ html, body {
 .logged-in-info {
     display: flex;
     align-items: center;
-    gap: 10px;  /* Odstęp między tekstem a przyciskiem */
+    gap: 10px;
     color: #000;
 }
 
@@ -184,23 +184,27 @@ html, body {
 }
 
 #myBtn {
-  display: none; /* Ukryty domyślnie */
-  position: fixed; /* Stays in place */
+  display: none;
+  position: fixed;
   bottom: 20px; /* Place the button at the bottom of the page */
   right: 30px; /* Place the button 30px from the right */
-  z-index: 99; /* Make sure it does not overlap */
-  border: none; /* No border */
-  outline: none; /* Remove outline */
-  background-color: #CEEAF7; /* Set a background color */
-  color: white; /* Text color */
-  cursor: pointer; /* Add a mouse pointer on hover */
-  padding: 0 15px 5px 15px; /* Some padding */
-  border-radius: 10px; /* Rounded corners */
-  font-size: 40px;
+  z-index: 999;
+  border: none;
+  outline: none;
+  background-color: #CCD7E4;
+  color: white;
+  cursor: pointer;
+  padding: 0 15px 5px 15px;
+  border-radius: 10px;
+  height: 40px;
+}
+
+#myBtn img{
+  width: 30px;
 }
 
 #myBtn:hover {
-  background-color: #555; /* Add a dark-grey background on hover */
+  background-color: #CEEAF7;
 }
 
 .footer-basic {
