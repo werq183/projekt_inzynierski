@@ -89,7 +89,8 @@ DATABASES = {
         'NAME': 'galeria',
         'USER': 'galeria',
         'PASSWORD': '123456',
-        'HOST': '192.168.56.4',  # lub inny host, jeśli używasz zdalnej bazy danych
+        #192.168.56.4
+        'HOST': '192.168.56.4', # lub inny host, jeśli używasz zdalnej bazy danych
         'PORT': '5432',  # lub inny port, jeśli PostgreSQL nie działa na domyślnym porcie
     }
 }

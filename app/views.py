@@ -177,11 +177,14 @@ async def generate_image(request):
         number_of_images = int(request.POST.get('number_of_images', 1))
         number_of_images = max(1, min(number_of_images, 10))  # Ogranicz zakres od 1 do 10
         width = int(request.POST.get('width', 512))  # get width from POST data with default value
+        width = max(256, min(width, 1024))
         height = int(request.POST.get('height', 512))  # get height from POST data with default value
+        height = max(256, min(height, 1024))
         num_inference_steps = int(request.POST.get('num_inference_steps', 20))  # get steps from POST data
+        seed = int(request.POST.get('seed', -1))
 
         # URL do API Stable Diffusion
-        api_url = 'http://10.0.10.30:7861'
+        api_url = 'http://vpn.skmiec.pl:47861'
         headers = {
             'Content-Type': 'application/json'
         }
@@ -193,6 +196,7 @@ async def generate_image(request):
             "num_inference_steps": num_inference_steps,
             "guidance_scale": 7.5,
             "safety_checker": True,
+            "seed": -1
         }
 
         # Iteruj przez liczbę wybranych obrazów
@@ -223,13 +227,14 @@ async def generate_image(request):
         })
         return HttpResponse(content.content)
     else:
-        # Ustaw domyślne wartości dla formularza, które będą wyświetlane początkowo
+        # domyślne wartości dla formularza
         prompt = "Tu wpisz swoje zapytanie"
         negative_prompt = "ugly, deformed, poor quality"
         number_of_images = 1
         width = 512
         height = 512
         num_inference_steps = 20
+        seed = -1
     context = {
         'user': request.user,
         'images_urls': images,
@@ -239,6 +244,7 @@ async def generate_image(request):
         'width': width,
         'height': height,
         'num_inference_steps': num_inference_steps,
+        'seed': seed
     }
     content = await sync_to_async(render)(request, 'generate_image.html', context)
     return HttpResponse(content.content)
