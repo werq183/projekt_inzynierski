@@ -130,6 +130,36 @@ body {
     filter: invert(100%);
 }
 
+.help-icon {
+    display: inline-block;
+    margin-left: 5px;
+    cursor: help;
+    position: relative;
+}
+
+.help-icon img{
+    width: 20px;
+    height: 20px;
+}
+
+.help-icon:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 25px;
+    left: 0;
+    white-space: pre-line;
+    border: 1px solid var(--light-gray);
+    background-color: white;
+    padding: 5px 10px;
+    color: var(--main-text);
+    font-size: 0.8em;
+    border-radius: 5px;
+    z-index: 1000;
+    max-width: 500px;
+    width: max-content; /* Zapewnia, że tekst nie zostanie obcięty */
+}
+
+
 @media (max-width: 768px) {
     #image-form {
         width: 90%;
