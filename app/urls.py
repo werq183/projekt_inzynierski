@@ -4,7 +4,8 @@ from django.conf.urls.static import static
 from django.contrib.auth.views import LogoutView
 
 from . import views
-from .views import home, artists, SignIn, SignUp, password, user_profile
+from .views import home, artists, SignIn, SignUp, password, user_profile, delete_preference
+
 
 urlpatterns = [
     path("", views.home, name="home"),
@@ -17,6 +18,7 @@ urlpatterns = [
     path("logged-out/", LogoutView.as_view(template_name='logged-out.html'), name="logout_view"),
     path('artists/<int:artist_id>/', views.artist_detail, name='artist_detail'),
     path('profile/<str:username>/', views.user_profile, name='user_profile'),
+    path('delete-preference/<int:preference_id>/', views.delete_preference, name='delete_preference')
 ]
 
 if settings.DEBUG:

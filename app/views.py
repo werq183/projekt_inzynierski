@@ -5,6 +5,7 @@ import requests
 from random import choice, sample
 
 from asgiref.sync import sync_to_async
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.contrib.auth import logout, update_session_auth_hash
@@ -12,11 +13,14 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
 from django.shortcuts import render, reverse, get_object_or_404, redirect
 from django.contrib import messages
-from .models import Artist, Image
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+
+from .models import Artist, Image, UserImagePreferences
 from django.conf import settings
 from django.contrib.auth.views import LoginView
 from asgiref.sync import async_to_sync
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseNotAllowed
 from django.views.generic import CreateView
 
 from django.http import JsonResponse
@@ -168,8 +172,30 @@ async def send_async_request(api_url, payload, headers):
 async def generate_image(request):
     images = []
     form_submitted = False  # zmienna śledząca, czy formularz został wysłany
+
+    def get_preferences_if_authenticated(user):
+        if user.is_authenticated:
+            try:
+                return UserImagePreferences.objects.filter(user=user)
+            except UserImagePreferences.DoesNotExist:
+                return None
+        else:
+            return None
+
+    def create_preferences(user, prompt, negative_prompt, seed, height, width, steps):
+        UserImagePreferences.objects.create(
+            user=user,
+            prompt=prompt,
+            negative_prompt=negative_prompt,
+            seed=seed,
+            height=height,
+            width=width,
+            steps=steps
+        )
+    saved_preferences = await sync_to_async(get_preferences_if_authenticated)(request.user)
+
     if request.method == 'POST':
-        form_submitted = True
+        action = request.POST.get('action')
         prompt = request.POST.get('prompt')
         negative_prompt = request.POST.get('negative_prompt')
         if negative_prompt is None:
@@ -180,53 +206,55 @@ async def generate_image(request):
         width = max(256, min(width, 1024))
         height = int(request.POST.get('height', 512))  # get height from POST data with default value
         height = max(256, min(height, 1024))
-        num_inference_steps = int(request.POST.get('num_inference_steps', 20))  # get steps from POST data
-        seed = int(request.POST.get('seed', -1))
+        steps = int(request.POST.get('steps', 20))  # get steps from POST data
+        seed = int(request.POST.get('seed', 1))
 
-        # URL do API Stable Diffusion
-        #api_url = 'http://vpn.skmiec.pl:47861'
-        api_url = 'http://10.0.10.30:7861'
-        headers = {
-            'Content-Type': 'application/json'
-        }
-        payload = {
-            "prompt": prompt,
-            "negative_prompt": negative_prompt,
-            "width": width,
-            "height": height,
-            "num_inference_steps": num_inference_steps,
-            "guidance_scale": 7.5,
-            "safety_checker": True,
-            "seed": -1
-        }
+        if action == 'save':
+            await sync_to_async(create_preferences)(user=request.user, prompt=prompt, negative_prompt=negative_prompt, seed=seed, height=height, width=width, steps=steps)
 
-        # Iteruj przez liczbę wybranych obrazów
-        for _ in range(number_of_images):
-            response = await send_async_request(api_url + '/sdapi/v1/txt2img', payload, headers)
-            if response.status_code == 200:
-                response_data = response.json()
-                # Sprawdź, czy odpowiedź zawiera klucz 'output'
-                if 'images' in response_data:
-                    images.append('data:image/png;base64,' + response_data['images'][0])
+        elif action == 'generate':
+            form_submitted = True
+            # URL do API Stable Diffusion
+            # api_url = 'http://vpn.skmiec.pl:47861'
+            # api_url = 'http://10.0.10.30:7861'
+            api_url = 'http://185.153.36.169:62137'
+            headers = {
+                'Content-Type': 'application/json'
+            }
+            payload = {
+                "prompt": prompt,
+                "negative_prompt": negative_prompt,
+                "width": width,
+                "height": height,
+                "steps": steps,
+                "guidance_scale": 7.5,
+                "safety_checker": True,
+                "seed": seed,
+                "subseed": 1
+            }
+
+            for _ in range(number_of_images):
+                response = await send_async_request(api_url + '/sdapi/v1/txt2img', payload, headers)
+                if response.status_code == 200:
+                    response_data = response.json()
+                    if 'images' in response_data:
+                        images.append('data:image/png;base64,' + response_data['images'][0])
+                    else:
+                        error = response_data.get('error', 'Odpowiedź API nie zawiera oczekiwanych danych.')
+                        content = await sync_to_async(render)(request, 'generate_image.html', {'error': error})
+                        return HttpResponse(content.content)
                 else:
-                    # Jeśli nie ma klucza 'output', obsłuż brak danych
-                    error = response_data.get('error', 'Odpowiedź API nie zawiera oczekiwanych danych.')
-                    #return render(request, 'generate_image.html', {'error': error})
+                    error = "Wystąpił błąd przy generowaniu obrazu."
+                    if response.json():
+                        error = response.json().get('error', error)
                     content = await sync_to_async(render)(request, 'generate_image.html', {'error': error})
                     return HttpResponse(content.content)
-            else:
-                error = "Wystąpił błąd przy generowaniu obrazu."
-                if response.json():
-                    error = response.json().get('error', error)
-                #return render(request, 'generate_image.html', {'error': error})
-                content = await sync_to_async(render)(request, 'generate_image.html', {'error': error})
-                return HttpResponse(content.content)
-        #return render(request, 'generate_image.html', {'images_urls': images, 'form_submitted': form_submitted})
-        content = await sync_to_async(render)(request, 'generate_image.html', {
-            'images_urls': images,
-            'form_submitted': form_submitted
-        })
-        return HttpResponse(content.content)
+            content = await sync_to_async(render)(request, 'generate_image.html', {
+                'images_urls': images,
+                'form_submitted': form_submitted,
+                'saved_preferences': saved_preferences
+            })
+            return HttpResponse(content.content)
     else:
         # domyślne wartości dla formularza
         prompt = "Tu wpisz swoje zapytanie"
@@ -234,8 +262,8 @@ async def generate_image(request):
         number_of_images = 1
         width = 512
         height = 512
-        num_inference_steps = 20
-        seed = -1
+        steps = 20
+        seed = 1
     context = {
         'user': request.user,
         'images_urls': images,
@@ -244,8 +272,27 @@ async def generate_image(request):
         'number_of_images': number_of_images,
         'width': width,
         'height': height,
-        'num_inference_steps': num_inference_steps,
-        'seed': seed
+        'steps': steps,
+        'seed': seed,
+        'saved_preferences': saved_preferences
     }
     content = await sync_to_async(render)(request, 'generate_image.html', context)
     return HttpResponse(content.content)
+
+
+async def delete_preference(request, preference_id):
+    if request.method != 'DELETE':
+        return HttpResponseNotAllowed(['DELETE'])
+    try:
+        # Retrieve the preference asynchronously
+        preference = await sync_to_async(UserImagePreferences.objects.get, thread_sensitive=True)(id=preference_id, user=request.user)
+        # Delete the preference asynchronously
+        await sync_to_async(preference.delete, thread_sensitive=True)()
+        return JsonResponse({'status': 'success'}, status=204)
+    except UserImagePreferences.DoesNotExist:
+        return JsonResponse({'error': 'Preference not found'}, status=404)
+    except Exception as e:
+        # It's a good practice to log the exception here
+        print(str(e))
+        return JsonResponse({'error': str(e)}, status=500)
+

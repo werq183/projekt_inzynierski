@@ -46,6 +46,19 @@ class Subject(models.Model):
         ordering = ['title']
 
 
+class UserImagePreferences(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    prompt = models.TextField()
+    negative_prompt = models.TextField()
+    seed = models.IntegerField()
+    height = models.IntegerField()
+    width = models.IntegerField()
+    steps = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.user.username}'s image preferences"
+
+
 class Image(models.Model):
     style = models.ForeignKey(Artist, on_delete=models.CASCADE)
     ai = models.ForeignKey(AI, on_delete=models.CASCADE)

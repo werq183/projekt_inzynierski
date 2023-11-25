@@ -76,6 +76,8 @@ body {
     cursor: pointer;
     transition: background-color 0.3s;
     margin-bottom: 2em;
+    margin-right: 5px;
+    margin-top: 1em;
 }
 
 #image-form button:hover {
@@ -118,6 +120,10 @@ body {
     display: none;
 }
 
+#delete-button{
+    background-color: firebrick;
+}
+
 .card:hover .download-btn{
     display: flex;
 }
@@ -158,6 +164,11 @@ body {
     max-width: 500px;
     width: max-content; /* Zapewnia, że tekst nie zostanie obcięty */
 }
+
+.modal-dialog-centered {
+    max-width: 90%;
+}
+
 
 
 @media (max-width: 768px) {

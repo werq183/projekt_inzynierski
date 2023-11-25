@@ -11,6 +11,7 @@
             <h1>Wygeneruj swoje zdjęcie:</h1>
         </div>
 
+
         <div class="container mt-5">
             <form method="post" id="image-form" class="text-center">
                 {% csrf_token %}
@@ -33,7 +34,7 @@
                             </span>
                         </label>
                         <!-- Ustawienie wartości textarea na wartość negative_prompt -->
-                        <textarea id="negative_prompt" name="neagtive_prompt" rows="4" class="form-control">{{ request.POST.negative_prompt|default:"ugly, deformed, poor quality" }}</textarea>
+                        <textarea id="negative_prompt" name="negative_prompt" rows="4" class="form-control">{{ request.POST.negative_prompt|default:"ugly, deformed, poor quality" }}</textarea>
                     </div>
                 </div>
                 <div class="row">
@@ -45,12 +46,12 @@
                     <div class="col-md-6">
                         <label for="seed" class="form-label">
                             Seed:
-                            <span class="help-icon" data-tooltip="Tzw. 'ziarno'.&#010;&#013;Gdy używasz tego samego numeru (seed), wyniki są zawsze takie same.">
+                            <span class="help-icon" data-tooltip="Tzw. 'ziarno'.&#010;&#013;Gdy używasz tego samego numeru (seed), wyniki są zawsze takie same.&#010;&#013;UWAGA: Ustawienie seed = -1 oznacza wybranie LOSOWEJ wartości za każdym razem.">
                                 <img src="{% static 'img/question-mark.png' %}" alt="?">
                             </span>
                         </label>
                         <!-- Ustawienie wartości input na wartość seed -->
-                        <input type="number" id="seed" name="seed" value="{{ request.POST.seed|default:-1 }}" required class="form-control">
+                        <input type="number" id="seed" name="seed" value="{{ request.POST.seed|default:1 }}" required class="form-control">
                     </div>
                 </div>
 
@@ -72,11 +73,68 @@
                                 <img src="{% static 'img/question-mark.png' %}" alt="?">
                             </span>
                         </label>
-                        <input type="number" id="num_inference_steps-number" name="num_inference_steps" value="{{ request.POST.num_inference_steps|default:20 }}" min="1" max="100" class="form-control" oninput="this.nextElementSibling.value = this.value">
-                        <input type="range" id="num_inference_steps" name="num_inference_steps" min="1" max="100" value="{{ request.POST.num_inference_steps|default:20 }}" class="form-slider" oninput="this.previousElementSibling.value = this.value">
+                        <input type="number" id="steps" name="steps" value="{{ request.POST.steps|default:20 }}" min="1" max="100" class="form-control" oninput="this.nextElementSibling.value = this.value">
+                        <input type="range" id="steps" name="steps" min="1" max="100" value="{{ request.POST.steps|default:20 }}" class="form-slider" oninput="this.previousElementSibling.value = this.value">
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Generuj obraz</button>
+                <input type="hidden" name="action" id="form-action" value="generate">
+                <button type="submit" onclick="document.getElementById('form-action').value='generate';" class="btn btn-primary">Generuj obraz</button>
+
+                <!-- Przycisk, który otwiera modal -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#preferencesModal">Pokaż zapisane prompty</button>
+                <button type="submit" onclick="document.getElementById('form-action').value='save';" class="btn btn-secondary">Zapisz prompt</button>
+                <!-- Modal-->
+                <div class="modal fade" id="preferencesModal" tabindex="-1" role="dialog" aria-labelledby="preferencesModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="preferencesModalLabel">Zapisane Preferencje</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="alert-box" class="alert" style="display: none;"></div>
+                                {% if saved_preferences %}
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Prompt</th>
+                                                <th>Negatywny prompt</th>
+                                                <th>Seed</th>
+                                                <th>Wysokość</th>
+                                                <th>Szerokość</th>
+                                                <th>Liczba kroków</th>
+                                                <th>Akcje</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for preference in saved_preferences %}
+                                              <tr>
+                                                <td>{{ preference.prompt }}</td>
+                                                <td>{{ preference.negative_prompt }}</td>
+                                                <td>{{ preference.seed }}</td>
+                                                <td>{{ preference.height }}</td>
+                                                <td>{{ preference.width }}</td>
+                                                <td>{{ preference.steps }}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-primary btn-sm" onclick="fillForm('{{ preference.prompt|escapejs }}', '{{ preference.negative_prompt|escapejs }}', '{{ preference.seed }}', '{{ preference.height }}', '{{ preference.width }}', '{{ preference.steps }}')">Użyj</button>
+                                                    <button type="button" class="btn btn-danger btn-sm" id="delete-button" onclick="deletePreference({{ preference.id }})">Usuń</button>
+                                                </td>
+                                              </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% else %}
+                                    <p>Brak zapisanych preferencji.</p>
+                                {% endif %}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </form>
 
             <div id="loading-message" class="text-center" style="display: none;">
@@ -125,7 +183,7 @@
                         <div class="col-md-6">
                             <label for="negative_prompt" class="form-label">Wpisz negatywne zapytanie:</label>
                             <!-- Ustawienie wartości textarea na wartość negative_prompt -->
-                            <textarea id="negative_prompt" name="neagtive_prompt" rows="4" class="form-control" disabled>{{ request.POST.negative_prompt|default:"ugly, deformed, poor quality" }}</textarea>
+                            <textarea id="negative_prompt" name="negative_prompt" rows="4" class="form-control" disabled>{{ request.POST.negative_prompt|default:"ugly, deformed, poor quality" }}</textarea>
                         </div>
                     </div>
                     <div class="row">
@@ -137,7 +195,7 @@
                         <div class="col-md-6">
                             <label for="seed" class="form-label">Seed:</label>
                             <!-- Ustawienie wartości input na wartość seed -->
-                            <input type="number" id="seed" name="seed" value="{{ request.POST.seed|default:-1 }}" required class="form-control" disabled>
+                            <input type="number" id="seed" name="seed" value="{{ request.POST.seed|default:1 }}" required class="form-control" disabled>
                         </div>
                     </div>
 
@@ -154,8 +212,8 @@
                         </div>
                         <div class="col-md-4">
                             <label for="num_inference_steps" class="form-label">Ilość kroków:</label>
-                            <input type="number" id="num_inference_steps-number" name="num_inference_steps" value="{{ request.POST.num_inference_steps|default:20 }}" min="1" max="100" class="form-control" disabled oninput="this.nextElementSibling.value = this.value">
-                            <input type="range" id="num_inference_steps" name="num_inference_steps" min="1" max="100" value="{{ request.POST.num_inference_steps|default:20 }}" class="form-slider" disabled oninput="this.previousElementSibling.value = this.value">
+                            <input type="number" id="steps-number" name="steps" value="{{ request.POST.steps|default:20 }}" min="1" max="100" class="form-control" disabled oninput="this.nextElementSibling.value = this.value">
+                            <input type="range" id="steps" name="steps" min="1" max="100" value="{{ request.POST.steps|default:20 }}" class="form-slider" disabled oninput="this.previousElementSibling.value = this.value">
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary" disabled>Generuj obraz</button>
@@ -164,4 +222,6 @@
     {% endif %}
     <script src="{% static 'js/loading.js' %}"></script>
     <script src="{% static 'js/download-image.js'%}"></script>
+    <script src="{% static 'js/modal.js' %}"></script>
+
 {% endblock %}
